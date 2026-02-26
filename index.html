@@ -5,86 +5,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SetFinder</title>
+    <!-- Simple CDN for Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background-color: #1a202c;
-            /* Dark navy/slate */
-        }
-
-        .card {
-            background-color: #2d3748;
-            /* Darker gray for card */
-            border: 1px solid #4a5568;
-        }
-
-        .input-box {
-            background-color: #4a5568;
-            color: white;
-        }
-
-        .input-box::placeholder {
-            color: #a0aec0;
-        }
-
-        /* Hide arrows in number input */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-    </style>
 </head>
 
-<body class="flex items-center justify-center min-h-screen">
+<body class="bg-slate-900 flex items-center justify-center min-h-screen">
 
-    <div class="card p-10 rounded-2xl shadow-xl w-96 text-center">
-        <h1 class="text-4xl font-bold text-white mb-2">SetFinder</h1>
-        <p class="text-gray-400 text-sm mb-8">Enter the last 4 digits of your ID</p>
+    <!-- Main Card -->
+    <div class="bg-slate-800 p-10 rounded-2xl shadow-2xl w-full max-w-md text-center border border-slate-700">
 
-        <div class="space-y-6">
-            <input type="number" id="idInput" placeholder="e.g. 2596"
-                class="input-box w-full p-4 rounded-lg outline-none text-lg text-center">
+        <h1 class="text-4xl font-bold text-white mb-2">Set Finder</h1>
+        <p class="text-gray-400 text-md mb-1">Find Your CSE2263 Assignment Set in a second</p>
+        <p class="text-gray-500 text-sm mb-8">Enter the last 4 digits of your ID:</p>
 
+        <div class="space-y-5">
+            <!-- ID Input field - Numeric inputmode for mobile convenience -->
+            <input type="text" id="idInput" placeholder="e.g. 2596" inputmode="numeric" pattern="[0-9]*" maxlength="4"
+                class="w-full p-4 rounded-xl bg-slate-700 text-white text-center text-lg outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500">
+
+            <!-- Action Button - Triggers calculation -->
             <button onclick="findSet()"
-                class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 transition duration-200 text-white py-4 rounded-xl font-semibold text-lg">
+                class="w-full bg-blue-600 hover:bg-blue-500 transition-colors text-white py-4 rounded-xl font-bold text-lg shadow-lg active:scale-95 duration-150">
                 Find My Set
             </button>
         </div>
 
-        <div id="result" class="mt-8 text-white min-h-[60px]"></div>
+        <!-- Result Section -->
+        <div id="result" class="mt-8 text-white min-h-[80px] flex items-center justify-center">
+            <p class="text-gray-600 italic text-sm text-center">Enter your ID and <br> click the button to see your set
+            </p>
+        </div>
+
     </div>
 
     <script>
         function findSet() {
-            const last4 = document.getElementById("idInput").value;
-            const resultDiv = document.getElementById("result");
+            const inputField = document.getElementById("idInput");
+            const resultArea = document.getElementById("result");
+            const idValue = inputField.value;
 
-            if (last4.length !== 4) {
-                resultDiv.innerHTML = "<span class='text-red-400'>⚠ Please enter exactly 4 digits!</span>";
+            // Simple "human-written" validation
+            const numericID = idValue.replace(/\D/g, ''); // Clean up any non-numbers
+            if (numericID.length !== 4) {
+                resultArea.innerHTML = "<span class='text-red-400 font-medium animate-pulse'>⚠ Please enter exactly 4 digits!</span>";
                 return;
             }
 
-            const remainder = parseInt(last4) % 5;
+            // Calculation logic
+            const remainder = parseInt(numericID) % 5;
             const sets = ["Set A", "Set B", "Set C", "Set D", "Set E"];
 
-            resultDiv.innerHTML = `
-                <div class="space-y-1">
-                    <p class="text-gray-400 text-sm uppercase tracking-wider">Assignment</p>
-                    <p class="text-3xl font-bold text-blue-400">${sets[remainder]}</p>
-                    <p class="text-xs text-gray-500">Remainder: ${remainder}</p>
+            // Show result with a small animation to feel responsive
+            resultArea.innerHTML = `
+                <div class="text-center">
+                    <p class="text-gray-400 text-xs uppercase tracking-widest mb-1">Your Assignment</p>
+                    <p class="text-3xl font-bold text-blue-400 mb-1">${sets[remainder]}</p>
+                    <p class="text-gray-600 text-xs">Remainder: ${remainder}</p>
                 </div>
             `;
         }
 
-        // Add Enter key support
-        document.getElementById("idInput").addEventListener("keypress", function (event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
+        // Support for Enter key
+        document.getElementById("idInput").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
                 findSet();
             }
         });
