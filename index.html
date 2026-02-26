@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SetFinder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #1a202c;
+            /* Dark navy/slate */
+        }
+
+        .card {
+            background-color: #2d3748;
+            /* Darker gray for card */
+            border: 1px solid #4a5568;
+        }
+
+        .input-box {
+            background-color: #4a5568;
+            color: white;
+        }
+
+        .input-box::placeholder {
+            color: #a0aec0;
+        }
+
+        /* Hide arrows in number input */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen">
+
+    <div class="card p-10 rounded-2xl shadow-xl w-96 text-center">
+        <h1 class="text-4xl font-bold text-white mb-2">SetFinder</h1>
+        <p class="text-gray-400 text-sm mb-8">Enter the last 4 digits of your ID</p>
+
+        <div class="space-y-6">
+            <input type="number" id="idInput" placeholder="e.g. 2596"
+                class="input-box w-full p-4 rounded-lg outline-none text-lg text-center">
+
+            <button onclick="findSet()"
+                class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 transition duration-200 text-white py-4 rounded-xl font-semibold text-lg">
+                Find My Set
+            </button>
+        </div>
+
+        <div id="result" class="mt-8 text-white min-h-[60px]"></div>
+    </div>
+
+    <script>
+        function findSet() {
+            const last4 = document.getElementById("idInput").value;
+            const resultDiv = document.getElementById("result");
+
+            if (last4.length !== 4) {
+                resultDiv.innerHTML = "<span class='text-red-400'>⚠ Please enter exactly 4 digits!</span>";
+                return;
+            }
+
+            const remainder = parseInt(last4) % 5;
+            const sets = ["Set A", "Set B", "Set C", "Set D", "Set E"];
+
+            resultDiv.innerHTML = `
+                <div class="space-y-1">
+                    <p class="text-gray-400 text-sm uppercase tracking-wider">Assignment</p>
+                    <p class="text-3xl font-bold text-blue-400">${sets[remainder]}</p>
+                    <p class="text-xs text-gray-500">Remainder: ${remainder}</p>
+                </div>
+            `;
+        }
+
+        // Add Enter key support
+        document.getElementById("idInput").addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                findSet();
+            }
+        });
+    </script>
+
+</body>
+
+</html>
